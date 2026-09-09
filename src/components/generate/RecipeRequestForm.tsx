@@ -30,6 +30,17 @@ function splitCommaList(value: string): string[] {
         .filter(Boolean);
 }
 
+// Helper function to split on comma and return undefined when input is optional
+function splitCommaListOrUndefined(
+    value: string | undefined
+): string[] | undefined {
+    if (!value) return undefined;
+
+    const items = splitCommaList(value);
+
+    return items.length > 0 ? items : undefined;
+}
+
 
 // Helper function to convert empty strings to undefined
 function emptyToUndefined(value: string): string | undefined {
@@ -59,10 +70,10 @@ export default function RecipeRequestForm() {
         const request: GenerationRequest = {
             ingredients: splitCommaList(data.ingredientsRaw),
             cuisineOrFoodType: emptyToUndefined(data.cuisineOrFoodType ?? ""),
-            dietaryRestrictions: data.dietaryRestrictionsRaw ? splitCommaList(data.dietaryRestrictionsRaw) : undefined,
+            dietaryRestrictions: splitCommaListOrUndefined(data.dietaryRestrictionsRaw),
             servings: data.servings,
             maxTimeMinutes: data.maxTimeMinutes,
-            equipment: data.equipmentRaw ? splitCommaList(data.equipmentRaw) : undefined,
+            equipment: splitCommaListOrUndefined(data.equipmentRaw),
             additionalPreferences: emptyToUndefined(data.additionalPreferences ?? ""),
         };
     
@@ -116,6 +127,8 @@ export default function RecipeRequestForm() {
                 <input 
                     id="servings"
                     type="number" 
+                    min={1}
+                    max={20}
                     {...register("servings", { valueAsNumber: true })}
                 />
                 {errors.servings && (
@@ -123,10 +136,12 @@ export default function RecipeRequestForm() {
                 )}
             </div>
             <div>
-                <label htmlFor="maxTimeMinutes">Maximum Desired Cooking Time</label>
+                <label htmlFor="maxTimeMinutes">Maximum Total Time (minutes)</label>
                 <input 
                     id="maxTimeMinutes"
                     type="number" 
+                    min={1}
+                    max={1440}
                     {...register("maxTimeMinutes", { 
                         setValueAs: (v) => (v === "" ? undefined : Number(v)),
                      })}
