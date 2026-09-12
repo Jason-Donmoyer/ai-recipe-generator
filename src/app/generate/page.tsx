@@ -4,6 +4,7 @@ import { useState } from 'react';
 import RecipeRequestForm from "@/components/generate/RecipeRequestForm";
 import { Recipe } from '@/lib/recipe-schema';
 import type { GenerationRequest } from '@/lib/validation/generationRequestSchema';
+import RecipeView from '@/components/recipe/RecipeView';
 
 
 
@@ -44,7 +45,7 @@ export default function GeneratePage() {
             <RecipeRequestForm onSubmitRequest={handleGenerate} />
             {isLoading && <p>Generating...</p>}
             {error && <p>{error}</p>}
-            {recipe && <pre>{JSON.stringify(recipe, null, 2)}</pre>}
+            {recipe && <RecipeView recipe={recipe} />}
         </div>
     );
 }
