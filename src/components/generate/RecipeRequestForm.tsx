@@ -21,6 +21,9 @@ const RecipeRequestFormSchema = z.object({
 
 type RecipeRequestFormValues = z.infer<typeof RecipeRequestFormSchema>;
 
+type RecipeRequestFormProps = {
+    onSubmitRequest: (request: GenerationRequest) => void;
+};
 
 // Helper function to split on comma
 function splitCommaList(value: string): string[] {
@@ -48,7 +51,7 @@ function emptyToUndefined(value: string): string | undefined {
     return trimmed === "" ? undefined : trimmed;
 }
 
-export default function RecipeRequestForm() {
+export default function RecipeRequestForm({ onSubmitRequest }: RecipeRequestFormProps) {
     const {
         register,
         handleSubmit,
@@ -83,8 +86,9 @@ export default function RecipeRequestForm() {
             console.error(result.error);
             return;
         }
-    
-        console.log(result.data);
+
+        onSubmitRequest(result.data)
+        // console.log(result.data);
     };
 
     return (
